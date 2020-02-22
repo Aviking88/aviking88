@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ngx-time-mask": [
+        "dist/ngx-time-mask"
+      ],
+      "ngx-time-mask/*": [
+        "dist/ngx-time-mask/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
