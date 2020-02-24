@@ -1,17 +1,4 @@
 import {
-  BACKSPACE,
-  DELETE,
-  LEFT_ARROW,
-  NINE,
-  NUMPAD_NINE,
-  NUMPAD_ZERO,
-  RIGHT_ARROW,
-  DOWN_ARROW,
-  UP_ARROW,
-  TAB,
-  ZERO,
-} from '@angular/cdk/keycodes';
-import {
   Directive,
   ElementRef,
   HostListener,
@@ -22,6 +9,18 @@ import {
   NgModel,
 } from '@angular/forms';
 
+const MAC_ENTER = 3;
+const BACKSPACE = 8;
+const TAB = 9;
+const LEFT_ARROW = 37;
+const UP_ARROW = 38;
+const RIGHT_ARROW = 39;
+const DOWN_ARROW = 40;
+const DELETE = 46;
+const ZERO = 48;
+const NINE = 57;
+const NUMPAD_ZERO = 96;
+const NUMPAD_NINE = 105;
 @Directive({
   // tslint:disable-next-line: directive-selector
   selector: '[ngModel][ngxTimeMask]',
