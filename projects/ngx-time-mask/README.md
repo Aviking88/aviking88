@@ -40,7 +40,7 @@ export class AppModule { }
 
 This is how you do it with the **directive**:
 ```html
-<input class="time-count" ngxTimeMask [(ngModel)]="data">
+<input class="time-count" ngxTimeMask [(ngModel)]="data" (change)="onTimeChange($event)">
 ```
 And in your component define data (`12:00` by default).
 

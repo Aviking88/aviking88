@@ -4,6 +4,8 @@ import {
   HostListener,
   Renderer2,
   Self,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import {
   NgModel,
@@ -27,6 +29,8 @@ const NUMPAD_NINE = 105;
   providers: [NgModel],
 })
 export class NgxTimeMaskDirective {
+  // tslint:disable-next-line: no-output-native
+  @Output() change = new EventEmitter();
 
   private fieldJustGotFocus = false;
 
@@ -148,22 +152,31 @@ export class NgxTimeMaskDirective {
       minutes = this.getHoursInStringAfterAppend(+minutes, valueToAppend, 60);
       this._setMinutes(hours, minutes, key);
     }
-
-
-
-    this.fieldJustGotFocus = false;
   }
 
   getHoursInStringAfterAppend(hours: number, valueToAppend: number, limitToReset: number): string {
     // Hours should be b/w  01 - 12 and Minutes should be 0-59
-    if (hours <= limitToReset) {
-      let valueAfterAppend = hours + valueToAppend;
-      if (valueAfterAppend <= 0) {
-        valueAfterAppend = limitToReset === 12 ? 12 : 59;
-      } else if (valueAfterAppend > limitToReset) {
-        valueAfterAppend = limitToReset === 12 ? 1 : 0;
+    if (limitToReset === 12) {
+      if (hours <= limitToReset) {
+        let valueAfterAppend = hours + valueToAppend;
+        if (valueAfterAppend < 0) {
+           valueAfterAppend = 12;
+        } else if (valueAfterAppend > limitToReset) {
+          valueAfterAppend = 1;
+        }
+        return valueAfterAppend < 10 ? `0${valueAfterAppend}` : `${valueAfterAppend}`;
       }
-      return valueAfterAppend < 10 ? `0${valueAfterAppend}` : `${valueAfterAppend}`;
+    } else {
+      if (hours <= limitToReset) {
+        let valueAfterAppend = hours + valueToAppend;
+        if (valueAfterAppend < 0) {
+          valueAfterAppend =  59;
+        } else if (valueAfterAppend > limitToReset) {
+          valueAfterAppend = 0;
+        }
+        return valueAfterAppend < 10 ? `0${valueAfterAppend}` : `${valueAfterAppend}`;
+      }
+
     }
 
     return '01';
@@ -183,10 +196,15 @@ export class NgxTimeMaskDirective {
       if (firstDigit === '-' || this.fieldJustGotFocus) {
         newHour = `0${key}`;
         sendCursorToMinutes = Number(key) > 1;
+        this.fieldJustGotFocus = false;
       } else {
         newHour = `${secondDigit}${+key === 0 ? '1' : key}`;
         if (Number(newHour) > 12) {
           newHour = '12';
+        }
+        if (Number(newHour) === 0) {
+          newHour = '01';
+
         }
         sendCursorToMinutes = true;
       }
@@ -195,17 +213,22 @@ export class NgxTimeMaskDirective {
       if (Number(newHour) > 12) {
         newHour = '12';
       }
+      if (Number(newHour) === 0) {
+        newHour = '12';
+
+      }
     }
 
     completeTime = `${newHour}:${minutes}`;
 
     this.renderer.setProperty(this.element.nativeElement, 'value', completeTime);
     this.inputDataChanged();
-    if (!sendCursorToMinutes) {
-      this.element.nativeElement.setSelectionRange(0, 2);
-    } else {
+    if (sendCursorToMinutes) {
       this.element.nativeElement.setSelectionRange(3, 6);
       this.fieldJustGotFocus = true;
+    } else {
+      this.element.nativeElement.setSelectionRange(0, 2);
+      this.fieldJustGotFocus = false;
     }
   }
 
@@ -247,8 +270,10 @@ export class NgxTimeMaskDirective {
     this.inputDataChanged();
     if (resetCursor) {
       this.element.nativeElement.setSelectionRange(0, 2);
+      this.fieldJustGotFocus = true;
     } else {
       this.element.nativeElement.setSelectionRange(3, 6);
+      this.fieldJustGotFocus = false;
     }
   }
 
@@ -290,6 +315,7 @@ export class NgxTimeMaskDirective {
   /** Emit Data on Change  */
   private inputDataChanged() {
     this.ngModel.update.emit(this.element.nativeElement.value);
+    this.change.emit(this.element.nativeElement.value);
   }
 
 }
