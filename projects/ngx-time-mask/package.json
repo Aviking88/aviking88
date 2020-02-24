@@ -1,6 +1,6 @@
 {
   "name": "ngx-time-mask",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^4.0.0",
     "@angular/core": "^4.0.0"
