@@ -198,7 +198,7 @@ export class NgxTimeMaskDirective {
         sendCursorToMinutes = Number(key) > 1;
         this.fieldJustGotFocus = false;
       } else {
-        newHour = `${secondDigit}${+key === 0 ? '1' : key}`;
+        newHour = `${secondDigit}${+key === 0 && +secondDigit === 0 ? '1' : key}`;
         if (Number(newHour) > 12) {
           newHour = '12';
         }
